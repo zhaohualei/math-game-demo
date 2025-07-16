@@ -211,6 +211,63 @@ class DataManager {
     const todayRecord = records.find(r => r.date === today);
     return todayRecord ? todayRecord.isCheckedIn : false;
   }
+
+  // 添加专项训练记录
+  addSpecialTrainingRecord(record) {
+    const records = this.getSpecialTrainingRecords();
+    const newRecord = {
+      id: Date.now(),
+      ...record
+    };
+    
+    records.unshift(newRecord);
+    localStorage.setItem('specialTrainingRecords', JSON.stringify(records));
+    
+    // 更新用户积分
+    const profile = this.getUserProfile();
+    profile.totalScore += record.score;
+    profile.level = this.getLevelByScore(profile.totalScore);
+    this.updateUserProfile(profile);
+  }
+
+  // 获取专项训练记录
+  getSpecialTrainingRecords() {
+    return JSON.parse(localStorage.getItem('specialTrainingRecords') || '[]');
+  }
+
+  // 获取专项训练统计
+  getSpecialTrainingStats() {
+    const records = this.getSpecialTrainingRecords();
+    const stats = {
+      totalSessions: records.length,
+      totalScore: records.reduce((sum, record) => sum + record.score, 0),
+      averageScore: 0,
+      byCategory: {}
+    };
+    
+    if (records.length > 0) {
+      stats.averageScore = Math.round(stats.totalScore / records.length * 100) / 100;
+      
+      records.forEach(record => {
+        if (!stats.byCategory[record.category]) {
+          stats.byCategory[record.category] = {
+            sessions: 0,
+            totalScore: 0,
+            averageScore: 0
+          };
+        }
+        stats.byCategory[record.category].sessions++;
+        stats.byCategory[record.category].totalScore += record.score;
+      });
+      
+      Object.keys(stats.byCategory).forEach(category => {
+        const categoryStats = stats.byCategory[category];
+        categoryStats.averageScore = Math.round(categoryStats.totalScore / categoryStats.sessions * 100) / 100;
+      });
+    }
+    
+    return stats;
+  }
 }
 
-export default new DataManager(); 
+export default new DataManager();

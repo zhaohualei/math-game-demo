@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from "react";
-import { FaCalendarAlt, FaTrophy, FaBookOpen, FaStore, FaArrowLeft } from "react-icons/fa";
+import { FaCalendarAlt, FaTrophy, FaBookOpen, FaStore, FaArrowLeft, FaDumbbell } from "react-icons/fa";
 import dataManager from "./utils/dataManager";
 import RankingPage from "./components/RankingPage";
 import CheckinLogPage from "./components/CheckinLogPage";
 import WrongQuestionsPage from "./components/WrongQuestionsPage";
+import SpecialTrainingPage from "./components/SpecialTrainingPage";
 
 export const demoQuestions = [
   { id: 1, prompt: "2^3 = ?", options: ["6", "8", "9", "12"], answerIndex: 1 },
@@ -218,6 +219,10 @@ export default function App() {
     return <WrongQuestionsPage onBack={navigateToHome} />;
   }
 
+  if (currentPage === 'special-training') {
+    return <SpecialTrainingPage onBack={navigateToHome} />;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4 space-y-4 max-w-md mx-auto font-sans">
       <div className="text-3xl font-extrabold text-center text-blue-700 drop-shadow-sm">
@@ -273,6 +278,19 @@ export default function App() {
           </div>
         </div>
 
+        <div 
+          className="rounded-2xl shadow-md bg-indigo-50 p-4 flex items-center gap-2 cursor-pointer hover:bg-indigo-100 transition-colors"
+          onClick={() => navigateToPage('special-training')}
+        >
+          <FaDumbbell className="text-indigo-500" />
+          <div>
+            <div className="text-sm font-semibold text-gray-700">🏋️ 专项训练</div>
+            <div className="text-xs text-gray-500">分类练习强化</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
         <div className="rounded-2xl shadow-md bg-orange-50 p-4 flex items-center gap-2 cursor-pointer hover:bg-orange-100 transition-colors">
           <FaStore className="text-orange-500" />
           <div>
@@ -280,16 +298,16 @@ export default function App() {
             <div className="text-xs text-gray-500">皮肤 / 角色 / 背景</div>
           </div>
         </div>
-      </div>
 
-      <div 
-        className="rounded-2xl shadow-md bg-purple-50 p-4 flex items-center gap-4 cursor-pointer hover:bg-purple-100 transition-colors"
-        onClick={() => navigateToPage('ranking')}
-      >
-        <FaTrophy className="text-purple-500" />
-        <div>
-          <div className="text-sm font-semibold text-gray-700">🏆 排行榜</div>
-          <div className="text-xs text-gray-500">当前排名：第 {userProfile.rank || 38} 名</div>
+        <div 
+          className="rounded-2xl shadow-md bg-purple-50 p-4 flex items-center gap-2 cursor-pointer hover:bg-purple-100 transition-colors"
+          onClick={() => navigateToPage('ranking')}
+        >
+          <FaTrophy className="text-purple-500" />
+          <div>
+            <div className="text-sm font-semibold text-gray-700">🏆 排行榜</div>
+            <div className="text-xs text-gray-500">当前排名：第 {userProfile.rank || 38} 名</div>
+          </div>
         </div>
       </div>
     </div>
